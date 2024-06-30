@@ -51,35 +51,34 @@ class GameObject:
         Используется для отрисовки объекта на экране.
         """
         raise NotImplementedError(
-            'Метод должен быть определен в дочернем классе')
+            f'Метод отсутствует в классе {self.__class__.__name__}. '
+            'Необходимо определить в дочернем классе.')
 
 
 class Apple(GameObject):
     """Метод описывает яблоко и действия с ним."""
 
-    def __init__(self):
+    def __init__(self, color=APPLE_COLOR):
         """Инициализирует атрибуты яблока.
 
         Задаёт цвет яблока
         и вызывает метод randomize_position
         для установки начального положения яблока.
         """
-        super().__init__(APPLE_COLOR)
+        super().__init__(color)
 
         self.randomize_position()
 
-    def randomize_position(self, occupied_position=CENTER_OF_SCREEN):
+    def randomize_position(self, occupied_position=[CENTER_OF_SCREEN]):
         """Устанавливает случайное положение яблока.
 
         Координаты в пределах игрового поля.
         """
-        self.position = (
-            randrange(0, SCREEN_WIDTH, GRID_SIZE),
-            randrange(0, SCREEN_HEIGHT, GRID_SIZE)
-        )
-
         while self.position in occupied_position:
-            self.position = self.randomize_position()
+            self.position = (
+                randrange(0, SCREEN_WIDTH, GRID_SIZE),
+                randrange(0, SCREEN_HEIGHT, GRID_SIZE)
+            )
 
     def draw(self):
         """Отрисовывает яблоко на игровой поверхности."""
@@ -91,13 +90,13 @@ class Apple(GameObject):
 class Snake(GameObject):
     """Метод описывает змейку и её поведение."""
 
-    def __init__(self):
+    def __init__(self, color=SNAKE_COLOR):
         """Инициализирует начальное положение змейки.
 
         Задаёт её длину, начальное положение, направление движения,
         новое направление движения, цвет, последний элемент.
         """
-        super().__init__(SNAKE_COLOR)
+        super().__init__(color)
         self.length = 1
         self.positions = [self.position]
         self.direction = RIGHT
@@ -196,6 +195,7 @@ def main():
         if snake.get_head_position() in snake.positions[2:]:
             screen.fill(BOARD_BACKGROUND_COLOR)
             snake.reset()
+            apple.randomize_position()
 
         apple.draw()
         snake.draw()
